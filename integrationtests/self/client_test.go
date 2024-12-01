@@ -9,13 +9,13 @@ import (
 	"os"
 	"time"
 
-	quic "github.com/lucas-clemente/quic-go"
-	"github.com/lucas-clemente/quic-go/h2quic"
-	"github.com/lucas-clemente/quic-go/integrationtests/tools/testserver"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
+	quic "github.com/project-faster/mp-quic-go"
+	"github.com/project-faster/mp-quic-go/h2quic"
+	"github.com/project-faster/mp-quic-go/integrationtests/tools/testserver"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
 )
 
 var _ = Describe("Client tests", func() {

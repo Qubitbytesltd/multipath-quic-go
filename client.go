@@ -9,10 +9,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/internal/wire"
-	"github.com/lucas-clemente/quic-go/qerr"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+	"github.com/project-faster/mp-quic-go/internal/wire"
+	"github.com/project-faster/mp-quic-go/qerr"
 )
 
 type client struct {
@@ -196,9 +196,9 @@ func populateClientConfig(config *Config) *Config {
 		RequestConnectionIDTruncation:         config.RequestConnectionIDTruncation,
 		MaxReceiveStreamFlowControlWindow:     maxReceiveStreamFlowControlWindow,
 		MaxReceiveConnectionFlowControlWindow: maxReceiveConnectionFlowControlWindow,
-		KeepAlive:      config.KeepAlive,
-		CacheHandshake: config.CacheHandshake,
-		CreatePaths:    config.CreatePaths,
+		KeepAlive:                             config.KeepAlive,
+		CacheHandshake:                        config.CacheHandshake,
+		CreatePaths:                           config.CreatePaths,
 	}
 }
 
@@ -317,7 +317,7 @@ func (c *client) handlePacket(rcvRawPacket *receivedRawPacket) {
 		}
 		pr, err := wire.ParsePublicReset(r)
 		if err != nil {
-			utils.Infof("Received a Public Reset for connection %x. An error occurred parsing the packet.")
+			utils.Infof("Received a Public Reset for connection %x. An error occurred parsing the packet.", err)
 			return
 		}
 		utils.Infof("Received Public Reset, rejected packet number: %#x.", pr.RejectedPacketNumber)

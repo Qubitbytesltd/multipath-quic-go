@@ -3,11 +3,11 @@ package flowcontrol
 import (
 	"time"
 
-	"github.com/lucas-clemente/quic-go/congestion"
-	"github.com/lucas-clemente/quic-go/internal/mocks"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/project-faster/mp-quic-go/congestion"
+	"github.com/project-faster/mp-quic-go/internal/mocks"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
 )
 
 var _ = Describe("Flow controller", func() {

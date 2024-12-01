@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package crypto
@@ -9,7 +10,7 @@ import (
 
 	"github.com/aead/chacha20"
 
-	"github.com/lucas-clemente/quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
 )
 
 type aeadChacha20Poly1305 struct {

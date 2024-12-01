@@ -3,9 +3,9 @@ package congestion
 import (
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/protocol"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
 )
 
 const initialCongestionWindowPackets protocol.PacketNumber = 10

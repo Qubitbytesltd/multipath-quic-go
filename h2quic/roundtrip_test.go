@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"time"
 
-	quic "github.com/lucas-clemente/quic-go"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	quic "github.com/project-faster/mp-quic-go"
 )
 
 type mockClient struct {

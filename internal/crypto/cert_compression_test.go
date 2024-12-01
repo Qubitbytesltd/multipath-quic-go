@@ -7,10 +7,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"hash/fnv"
-
-	"github.com/lucas-clemente/quic-go-certificates"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
 func byteHash(d []byte) []byte {

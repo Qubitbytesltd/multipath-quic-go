@@ -6,11 +6,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lucas-clemente/quic-go/congestion"
-	"github.com/lucas-clemente/quic-go/internal/handshake"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/qerr"
+	"github.com/project-faster/mp-quic-go/congestion"
+	"github.com/project-faster/mp-quic-go/internal/handshake"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+	"github.com/project-faster/mp-quic-go/qerr"
 )
 
 type flowControlManager struct {

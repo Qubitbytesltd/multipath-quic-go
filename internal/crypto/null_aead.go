@@ -1,6 +1,6 @@
 package crypto
 
-import "github.com/lucas-clemente/quic-go/internal/protocol"
+import "github.com/project-faster/mp-quic-go/internal/protocol"
 
 // NewNullAEAD creates a NullAEAD
 func NewNullAEAD(p protocol.Perspective, v protocol.VersionNumber) AEAD {

@@ -3,8 +3,8 @@ package wire
 import (
 	"bytes"
 
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
 )
 
 // A RstStreamFrame in QUIC
@@ -14,7 +14,7 @@ type RstStreamFrame struct {
 	ByteOffset protocol.ByteCount
 }
 
-//Write writes a RST_STREAM frame
+// Write writes a RST_STREAM frame
 func (f *RstStreamFrame) Write(b *bytes.Buffer, version protocol.VersionNumber) error {
 	b.WriteByte(0x01)
 	utils.GetByteOrder(version).WriteUint32(b, uint32(f.StreamID))

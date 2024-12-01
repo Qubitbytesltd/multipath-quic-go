@@ -5,8 +5,8 @@ package mocks_fc
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	"github.com/lucas-clemente/quic-go/internal/flowcontrol"
-	protocol "github.com/lucas-clemente/quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/flowcontrol"
+	protocol "github.com/project-faster/mp-quic-go/internal/protocol"
 )
 
 // MockFlowControlManager is a mock of FlowControlManager interface

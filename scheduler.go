@@ -3,10 +3,10 @@ package quic
 import (
 	"time"
 
-	"github.com/lucas-clemente/quic-go/ackhandler"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/internal/wire"
+	"github.com/project-faster/mp-quic-go/ackhandler"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+	"github.com/project-faster/mp-quic-go/internal/wire"
 )
 
 type scheduler struct {

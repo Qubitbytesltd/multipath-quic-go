@@ -3,8 +3,8 @@ package wire
 import (
 	"bytes"
 
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
 )
 
 // A BlockedFrame in QUIC
@@ -12,7 +12,7 @@ type BlockedFrame struct {
 	StreamID protocol.StreamID
 }
 
-//Write writes a BlockedFrame frame
+// Write writes a BlockedFrame frame
 func (f *BlockedFrame) Write(b *bytes.Buffer, version protocol.VersionNumber) error {
 	b.WriteByte(0x05)
 	utils.GetByteOrder(version).WriteUint32(b, uint32(f.StreamID))

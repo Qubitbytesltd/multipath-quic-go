@@ -3,9 +3,9 @@ package congestion
 import (
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/utils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/project-faster/mp-quic-go/internal/utils"
 )
 
 var _ = Describe("RTT stats", func() {

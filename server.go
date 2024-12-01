@@ -8,12 +8,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/crypto"
-	"github.com/lucas-clemente/quic-go/internal/handshake"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/internal/wire"
-	"github.com/lucas-clemente/quic-go/qerr"
+	"github.com/project-faster/mp-quic-go/internal/crypto"
+	"github.com/project-faster/mp-quic-go/internal/handshake"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+	"github.com/project-faster/mp-quic-go/internal/wire"
+	"github.com/project-faster/mp-quic-go/qerr"
 )
 
 // packetHandler handles packets
@@ -317,7 +317,7 @@ func (s *server) handlePacket(rcvRawPacket *receivedRawPacket) error {
 			var pr *wire.PublicReset
 			pr, err = wire.ParsePublicReset(r)
 			if err != nil {
-				utils.Infof("Received a Public Reset for connection %x. An error occurred parsing the packet.")
+				utils.Infof("Received a Public Reset for connection %x. An error occurred parsing the packet.", err)
 			} else {
 				utils.Infof("Received a Public Reset for connection %x, rejected packet number: 0x%x.", hdr.ConnectionID, pr.RejectedPacketNumber)
 			}

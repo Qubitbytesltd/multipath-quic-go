@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	quic "github.com/lucas-clemente/quic-go"
+	quic "github.com/project-faster/mp-quic-go"
 
-	"github.com/lucas-clemente/quic-go/h2quic"
-	"github.com/lucas-clemente/quic-go/internal/utils"
+	"github.com/project-faster/mp-quic-go/h2quic"
+	"github.com/project-faster/mp-quic-go/internal/utils"
 )
 
 func main() {
@@ -41,7 +41,7 @@ func main() {
 	}
 
 	quicConfig := &quic.Config{
-		CreatePaths: *multipath,
+		CreatePaths:    *multipath,
 		CacheHandshake: *cache,
 	}
 

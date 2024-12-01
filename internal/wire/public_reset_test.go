@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/lucas-clemente/quic-go/internal/handshake"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/project-faster/mp-quic-go/internal/handshake"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
 )
 
 var _ = Describe("public reset", func() {

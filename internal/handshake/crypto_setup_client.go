@@ -14,10 +14,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lucas-clemente/quic-go/internal/crypto"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
-	"github.com/lucas-clemente/quic-go/internal/utils"
-	"github.com/lucas-clemente/quic-go/qerr"
+	"github.com/project-faster/mp-quic-go/internal/crypto"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+	"github.com/project-faster/mp-quic-go/qerr"
 )
 
 type cryptoSetupClient struct {
@@ -127,7 +127,7 @@ func readBinaryFile(filename string) ([]byte, error) {
 
 	f, err := os.Open(filename)
 	if err != nil {
-	utils.Infof("error when opening handshake cache %s: %s", filename, err)
+		utils.Infof("error when opening handshake cache %s: %s", filename, err)
 		return nil, err
 	}
 	defer f.Close()

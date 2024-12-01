@@ -5,9 +5,9 @@ import (
 	"errors"
 
 	"github.com/bifurcation/mint"
-	"github.com/lucas-clemente/quic-go/internal/protocol"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
 )
 
 type mockMintController struct {

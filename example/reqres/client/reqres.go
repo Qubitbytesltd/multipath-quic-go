@@ -17,8 +17,8 @@ import (
 	"sync"
 	"time"
 
-	quic "github.com/lucas-clemente/quic-go"
-	"github.com/lucas-clemente/quic-go/internal/utils"
+	quic "github.com/project-faster/mp-quic-go"
+	"github.com/project-faster/mp-quic-go/internal/utils"
 )
 
 const (
