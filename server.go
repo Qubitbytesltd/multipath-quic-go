@@ -78,7 +78,7 @@ func ListenAddrImpl(addr string, tlsConf *tls.Config, config *Config, pconnMgrAr
 			operr := &net.OpError{Op: "listen", Net: "udp", Source: udpAddr, Addr: udpAddr, Err: err}
 			return nil, operr
 		}
-		err = pconnMgr.setup(pconn, udpAddr)
+		err = pconnMgr.setup(pconn, udpAddr, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -94,7 +94,7 @@ func ListenAddrImpl(addr string, tlsConf *tls.Config, config *Config, pconnMgrAr
 func Listen(pconn net.PacketConn, tlsConf *tls.Config, config *Config) (Listener, error) {
 	// Create the pconnManager here. It will be used to start udp connections
 	pconnMgr := &pconnManager{perspective: protocol.PerspectiveServer}
-	err := pconnMgr.setup(pconn, nil)
+	err := pconnMgr.setup(pconn, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func ListenImpl(pconn net.PacketConn, tlsConf *tls.Config, config *Config, pconn
 
 	if pconnMgrArg == nil {
 		pconnMgr = &pconnManager{perspective: protocol.PerspectiveServer}
-		err := pconnMgr.setup(pconn, nil)
+		err := pconnMgr.setup(pconn, nil, nil)
 		if err != nil {
 			return nil, err
 		}

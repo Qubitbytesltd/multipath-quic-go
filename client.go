@@ -53,7 +53,7 @@ func DialAddr(addr string, tlsConf *tls.Config, config *Config) (Session, error)
 	}
 	// Create the pconnManager here. It will be used to manage UDP connections
 	pconnMgr := &pconnManager{perspective: protocol.PerspectiveClient}
-	err = pconnMgr.setup(nil, nil)
+	err = pconnMgr.setup(nil, nil, config)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func DialAddrNonFWSecure(
 	}
 	// Create the pconnManager here. It will be used to manage UDP connections
 	pconnMgr := &pconnManager{perspective: protocol.PerspectiveClient}
-	err = pconnMgr.setup(nil, nil)
+	err = pconnMgr.setup(nil, nil, config)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func DialNonFWSecure(
 
 	if pconnMgrArg == nil {
 		pconnMgr = &pconnManager{perspective: protocol.PerspectiveClient}
-		err := pconnMgr.setup(pconn, nil)
+		err := pconnMgr.setup(pconn, nil, config)
 		if err != nil {
 			return nil, err
 		}

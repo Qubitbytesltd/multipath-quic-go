@@ -101,7 +101,7 @@ var _ = Describe("Server", func() {
 	BeforeEach(func() {
 		pconnMgr = &pconnManager{}
 		conn = &mockPacketConn{addr: &net.UDPAddr{}}
-		pconnMgr.setup(conn, nil)
+		pconnMgr.setup(conn, nil, nil)
 		config = &Config{Versions: protocol.SupportedVersions}
 	})
 

@@ -2,7 +2,6 @@ package quic
 
 import (
 	"net"
-	"strings"
 	"sync"
 	"time"
 
@@ -39,7 +38,7 @@ type pconnManager struct {
 }
 
 // Setup the pconn_manager and the pconnAny connection
-func (pcm *pconnManager) setup(pconnArg net.PacketConn, listenAddr net.Addr) error {
+func (pcm *pconnManager) setup(pconnArg net.PacketConn, listenAddr net.Addr, config *Config) error {
 	pcm.pconns = make(map[string]net.PacketConn)
 	pcm.localAddrs = make([]net.UDPAddr, 0)
 	pcm.rcvRawPackets = make(chan *receivedRawPacket)
@@ -48,6 +47,10 @@ func (pcm *pconnManager) setup(pconnArg net.PacketConn, listenAddr net.Addr) err
 	pcm.closed = make(chan struct{}, 1)
 	pcm.errorConn = make(chan error, 1) // Made non-blocking for tests
 	pcm.timer = time.NewTimer(0)
+
+	if config != nil {
+		pcm.localAddrs = append(pcm.localAddrs, config.MultipathAddresses...)
+	}
 
 	if pconnArg == nil {
 		// XXX (QDC): waiting for native support of SO_REUSEADDR in go...
@@ -194,44 +197,10 @@ func (pcm *pconnManager) createPconn(ip net.IP) (*net.UDPAddr, error) {
 }
 
 func (pcm *pconnManager) createPconns() error {
-	ifaces, err := net.Interfaces()
-	if err != nil {
-		return err
-	}
-	for _, i := range ifaces {
-		// TODO (QDC): do this in a generic way
-		if !strings.Contains(i.Name, "eth") && !strings.Contains(i.Name, "rmnet") && !strings.Contains(i.Name, "wlan") {
-			continue
-		}
-		addrs, err := i.Addrs()
+	for _, a := range pcm.localAddrs {
+		_, err := pcm.createPconn(a.IP)
 		if err != nil {
 			return err
-		}
-		for _, a := range addrs {
-			ip, _, err := net.ParseCIDR(a.String())
-			if err != nil {
-				return err
-			}
-			// If not Global Unicast, bypass
-			if !ip.IsGlobalUnicast() {
-				continue
-			}
-			// TODO (QDC): Clearly not optimal
-			found := false
-		lookingLoop:
-			for _, locAddr := range pcm.localAddrs {
-				if ip.Equal(locAddr.IP) {
-					found = true
-					break lookingLoop
-				}
-			}
-			if !found {
-				locAddr, err := pcm.createPconn(ip)
-				if err != nil {
-					return err
-				}
-				pcm.localAddrs = append(pcm.localAddrs, *locAddr)
-			}
 		}
 	}
 	return nil

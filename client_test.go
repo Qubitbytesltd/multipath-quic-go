@@ -22,7 +22,7 @@ var _ = Describe("Client", func() {
 		config     *Config
 		sess       *mockSession
 		packetConn *mockPacketConn
-		addr       net.Addr
+		addr       *net.UDPAddr
 		pconnMgr   *pconnManager
 
 		originalClientSessConstructor func(conn connection, pconnMgr *pconnManager, createPaths bool, hostname string, v protocol.VersionNumber, connectionID protocol.ConnectionID, tlsConf *tls.Config, config *Config, negotiatedVersions []protocol.VersionNumber) (packetHandler, <-chan handshakeEvent, error)
@@ -49,10 +49,11 @@ var _ = Describe("Client", func() {
 			dataReadFrom: addr,
 		}
 		config = &Config{
-			Versions: []protocol.VersionNumber{protocol.SupportedVersions[0], 77, 78},
+			Versions:           []protocol.VersionNumber{protocol.SupportedVersions[0], 77, 78},
+			MultipathAddresses: []net.UDPAddr{*addr},
 		}
 		pconnMgr = &pconnManager{}
-		pconnMgr.setup(packetConn, addr)
+		pconnMgr.setup(packetConn, addr, config)
 
 		msess, _, _ := newMockSession(nil, pconnMgr, false, 0, 0, nil, nil, nil)
 		sess = msess.(*mockSession)

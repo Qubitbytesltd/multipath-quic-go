@@ -123,6 +123,8 @@ type Config struct {
 	CacheHandshake bool
 	// Should the host try to create new paths, if possible?
 	CreatePaths bool
+	// UDP allowed for multipath
+	MultipathAddresses []net.UDPAddr
 }
 
 // A Listener for incoming QUIC connections
