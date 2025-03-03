@@ -24,7 +24,8 @@ type pconnManager struct {
 	pconns   map[string]net.PacketConn
 	pconnAny net.PacketConn
 
-	localAddrs []net.UDPAddr
+	localConns     []net.UDPAddr
+	localAddresses []net.UDPAddr
 
 	perspective protocol.Perspective
 
@@ -40,7 +41,8 @@ type pconnManager struct {
 // Setup the pconn_manager and the pconnAny connection
 func (pcm *pconnManager) setup(pconnArg net.PacketConn, listenAddr net.Addr, config *Config) error {
 	pcm.pconns = make(map[string]net.PacketConn)
-	pcm.localAddrs = make([]net.UDPAddr, 0)
+	pcm.localConns = make([]net.UDPAddr, 0)
+	pcm.localAddresses = make([]net.UDPAddr, 0)
 	pcm.rcvRawPackets = make(chan *receivedRawPacket)
 	pcm.changePaths = make(chan struct{}, 1)
 	pcm.closeConns = make(chan struct{}, 1)
@@ -49,7 +51,7 @@ func (pcm *pconnManager) setup(pconnArg net.PacketConn, listenAddr net.Addr, con
 	pcm.timer = time.NewTimer(0)
 
 	if config != nil {
-		pcm.localAddrs = append(pcm.localAddrs, config.MultipathAddresses...)
+		pcm.localAddresses = append(pcm.localAddresses, config.MultipathAddresses...)
 	}
 
 	if pconnArg == nil {
@@ -70,7 +72,7 @@ func (pcm *pconnManager) setup(pconnArg net.PacketConn, listenAddr net.Addr, con
 		}
 		pcm.pconnAny = pconn
 	} else {
-		// FIXME Update localAddrs
+		// FIXME Update localConns
 		pcm.pconnAny = pconnArg
 	}
 
@@ -197,11 +199,12 @@ func (pcm *pconnManager) createPconn(ip net.IP) (*net.UDPAddr, error) {
 }
 
 func (pcm *pconnManager) createPconns() error {
-	for _, a := range pcm.localAddrs {
-		_, err := pcm.createPconn(a.IP)
+	for _, a := range pcm.localAddresses {
+		conn, err := pcm.createPconn(a.IP)
 		if err != nil {
 			return err
 		}
+		pcm.localConns = append(pcm.localConns, *conn)
 	}
 	return nil
 }

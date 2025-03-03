@@ -539,7 +539,9 @@ func (s *session) handleFrames(fs []wire.Frame, p *path) error {
 				s.remoteRTTs[frame.PathIDs[i]] = frame.RemoteRTTs[i]
 				if frame.RemoteRTTs[i] >= 30*time.Minute {
 					// Path is potentially failed
-					s.paths[frame.PathIDs[i]].potentiallyFailed.Set(true)
+					if s.paths[frame.PathIDs[i]] != nil {
+						s.paths[frame.PathIDs[i]].potentiallyFailed.Set(true)
+					}
 				}
 			}
 			s.pathsLock.RUnlock()

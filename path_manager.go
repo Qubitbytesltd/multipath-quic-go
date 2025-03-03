@@ -119,7 +119,7 @@ func getIPVersion(ip net.IP) int {
 func (pm *pathManager) advertiseAddresses() {
 	pm.pconnMgr.mutex.Lock()
 	defer pm.pconnMgr.mutex.Unlock()
-	for _, locAddr := range pm.pconnMgr.localAddrs {
+	for _, locAddr := range pm.pconnMgr.localConns {
 		_, sent := pm.advertisedLocAddrs[locAddr.String()]
 		if !sent {
 			version := getIPVersion(locAddr.IP)
@@ -173,7 +173,7 @@ func (pm *pathManager) createPaths() error {
 	// TODO (QDC): clearly not optimali
 	pm.pconnMgr.mutex.Lock()
 	defer pm.pconnMgr.mutex.Unlock()
-	for _, locAddr := range pm.pconnMgr.localAddrs {
+	for _, locAddr := range pm.pconnMgr.localConns {
 		version := getIPVersion(locAddr.IP)
 		if version == 4 {
 			for _, remAddr := range pm.remoteAddrs4 {
