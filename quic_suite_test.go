@@ -1,6 +1,7 @@
 package quic
 
 import (
+<<<<<<< HEAD
 	"bytes"
 	"fmt"
 	"io"
@@ -10,6 +11,12 @@ import (
 	"runtime/pprof"
 	"strconv"
 	"strings"
+=======
+	"github.com/golang/mock/gomock"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+
+>>>>>>> project-faster/main
 	"testing"
 	"time"
 
@@ -30,6 +37,7 @@ var _ = BeforeEach(func() {
 	mockCtrl = gomock.NewController(GinkgoT())
 })
 
+<<<<<<< HEAD
 var _ = BeforeSuite(func() {
 	log.SetOutput(io.Discard)
 })
@@ -95,3 +103,8 @@ func TestMain(m *testing.M) {
 	}
 	os.Exit(status)
 }
+=======
+var _ = AfterEach(func() {
+	mockCtrl.Finish()
+})
+>>>>>>> project-faster/main

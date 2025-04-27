@@ -3,7 +3,11 @@ package quic
 import (
 	"sync"
 
+<<<<<<< HEAD
 	"github.com/quic-go/quic-go/internal/protocol"
+=======
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+>>>>>>> project-faster/main
 )
 
 type packetBuffer struct {

@@ -3,7 +3,12 @@ package congestion
 import (
 	"time"
 
+<<<<<<< HEAD:internal/congestion/hybrid_slow_start.go
 	"github.com/quic-go/quic-go/internal/protocol"
+=======
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+>>>>>>> project-faster/main:congestion/hybrid_slow_start.go
 )
 
 // Note(pwestin): the magic clamping numbers come from the original code in

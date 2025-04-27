@@ -11,6 +11,7 @@ import (
 	"os"
 	"sync"
 
+<<<<<<< HEAD
 	"github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"
 	"github.com/quic-go/quic-go/internal/testdata"
@@ -21,6 +22,18 @@ func main() {
 	quiet := flag.Bool("q", false, "don't print the data")
 	keyLogFile := flag.String("keylog", "", "key log file")
 	insecure := flag.Bool("insecure", false, "skip certificate verification")
+=======
+	quic "github.com/project-faster/mp-quic-go"
+
+	"github.com/project-faster/mp-quic-go/h2quic"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+)
+
+func main() {
+	verbose := flag.Bool("v", false, "verbose")
+	multipath := flag.Bool("m", false, "multipath")
+	output := flag.String("o", "", "logging output")
+>>>>>>> project-faster/main
 	flag.Parse()
 	urls := flag.Args()
 
@@ -32,6 +45,20 @@ func main() {
 		}
 		defer f.Close()
 		keyLog = f
+	}
+	utils.SetLogTimeFormat("")
+
+	if *output != "" {
+		logfile, err := os.Create(*output)
+		if err != nil {
+			panic(err)
+		}
+		defer logfile.Close()
+		log.SetOutput(logfile)
+	}
+
+	quicConfig := &quic.Config{
+		CreatePaths: *multipath,
 	}
 
 	pool, err := x509.SystemCertPool()
@@ -52,7 +79,11 @@ func main() {
 	}
 	defer roundTripper.Close()
 	hclient := &http.Client{
+<<<<<<< HEAD
 		Transport: roundTripper,
+=======
+		Transport: &h2quic.RoundTripper{QuicConfig: quicConfig},
+>>>>>>> project-faster/main
 	}
 
 	var wg sync.WaitGroup

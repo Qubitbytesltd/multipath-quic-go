@@ -5,10 +5,16 @@ import (
 	"fmt"
 	"sync"
 
+<<<<<<< HEAD
 	"github.com/quic-go/quic-go/internal/flowcontrol"
 	"github.com/quic-go/quic-go/internal/protocol"
 	"github.com/quic-go/quic-go/internal/qerr"
 	"github.com/quic-go/quic-go/internal/wire"
+=======
+	"github.com/project-faster/mp-quic-go/internal/handshake"
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/qerr"
+>>>>>>> project-faster/main
 )
 
 type streamError struct {
@@ -50,6 +56,7 @@ type streamsMap struct {
 	queueControlFrame func(wire.Frame)
 	newFlowController func(protocol.StreamID) flowcontrol.StreamFlowController
 
+<<<<<<< HEAD
 	mutex               sync.Mutex
 	outgoingBidiStreams *outgoingStreamsMap[streamI]
 	outgoingUniStreams  *outgoingStreamsMap[sendStreamI]
@@ -59,6 +66,24 @@ type streamsMap struct {
 }
 
 var _ streamManager = &streamsMap{}
+=======
+	nextStream                protocol.StreamID // StreamID of the next Stream that will be returned by OpenStream()
+	highestStreamOpenedByPeer protocol.StreamID
+	nextStreamOrErrCond       sync.Cond
+	openStreamOrErrCond       sync.Cond
+
+	closeErr           error
+	nextStreamToAccept protocol.StreamID
+
+	newStream newStreamLambda
+
+	numOutgoingStreams uint32
+	numIncomingStreams uint32
+}
+
+type streamLambda func(*stream) (bool, error)
+type newStreamLambda func(protocol.StreamID) *stream
+>>>>>>> project-faster/main
 
 func newStreamsMap(
 	ctx context.Context,
@@ -127,8 +152,51 @@ func (m *streamsMap) OpenStream() (Stream, error) {
 	if reset {
 		return nil, Err0RTTRejected
 	}
+<<<<<<< HEAD
 	str, err := mm.OpenStream()
 	return str, convertStreamError(err, protocol.StreamTypeBidi, m.perspective)
+=======
+
+	if m.perspective == protocol.PerspectiveServer {
+		if id%2 == 0 {
+			if id <= m.nextStream { // this is a server-side stream that we already opened. Must have been closed already
+				return nil, nil
+			}
+			return nil, qerr.Error(qerr.InvalidStreamID, fmt.Sprintf("attempted to open stream %d from client-side", id))
+		}
+		if id <= m.highestStreamOpenedByPeer { // this is a client-side stream that doesn't exist anymore. Must have been closed already
+			return nil, nil
+		}
+	}
+	if m.perspective == protocol.PerspectiveClient {
+		if id%2 == 1 {
+			if id <= m.nextStream { // this is a client-side stream that we already opened.
+				return nil, nil
+			}
+			return nil, qerr.Error(qerr.InvalidStreamID, fmt.Sprintf("attempted to open stream %d from server-side", id))
+		}
+		if id <= m.highestStreamOpenedByPeer { // this is a server-side stream that doesn't exist anymore. Must have been closed already
+			return nil, nil
+		}
+	}
+
+	// sid is the next stream that will be opened
+	sid := m.highestStreamOpenedByPeer + 2
+	// if there is no stream opened yet, and this is the server, stream 1 should be openend
+	if sid == 2 && m.perspective == protocol.PerspectiveServer {
+		sid = 1
+	}
+
+	for ; sid <= id; sid += 2 {
+		_, err := m.openRemoteStream(sid)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	m.nextStreamOrErrCond.Broadcast()
+	return m.streams[id], nil
+>>>>>>> project-faster/main
 }
 
 func (m *streamsMap) OpenStreamSync(ctx context.Context) (Stream, error) {
@@ -143,6 +211,7 @@ func (m *streamsMap) OpenStreamSync(ctx context.Context) (Stream, error) {
 	return str, convertStreamError(err, protocol.StreamTypeBidi, m.perspective)
 }
 
+<<<<<<< HEAD
 func (m *streamsMap) OpenUniStream() (SendStream, error) {
 	m.mutex.Lock()
 	reset := m.reset
@@ -214,11 +283,65 @@ func (m *streamsMap) GetOrOpenReceiveStream(id protocol.StreamID) (receiveStream
 		return nil, &qerr.TransportError{
 			ErrorCode:    qerr.StreamStateError,
 			ErrorMessage: err.Error(),
+=======
+	if m.perspective == protocol.PerspectiveServer {
+		m.numIncomingStreams++
+	} else {
+		m.numOutgoingStreams++
+	}
+
+	if id > m.highestStreamOpenedByPeer {
+		m.highestStreamOpenedByPeer = id
+	}
+
+	s := m.newStream(id)
+	m.putStream(s)
+	return s, nil
+}
+
+func (m *streamsMap) openStreamImpl() (*stream, error) {
+	id := m.nextStream
+	if m.numOutgoingStreams >= m.connectionParameters.GetMaxOutgoingStreams() {
+		return nil, qerr.TooManyOpenStreams
+	}
+
+	if m.perspective == protocol.PerspectiveServer {
+		m.numOutgoingStreams++
+	} else {
+		m.numIncomingStreams++
+	}
+
+	m.nextStream += 2
+	s := m.newStream(id)
+	m.putStream(s)
+	return s, nil
+}
+
+// OpenStream opens the next available stream
+func (m *streamsMap) OpenStream() (*stream, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	if m.closeErr != nil {
+		return nil, m.closeErr
+	}
+	return m.openStreamImpl()
+}
+
+func (m *streamsMap) OpenStreamSync() (*stream, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	for {
+		if m.closeErr != nil {
+			return nil, m.closeErr
+>>>>>>> project-faster/main
 		}
 	}
 	return str, nil
 }
 
+<<<<<<< HEAD
 func (m *streamsMap) getOrOpenReceiveStream(id protocol.StreamID) (receiveStreamI, error) {
 	num := id.StreamNum()
 	switch id.Type() {
@@ -226,6 +349,18 @@ func (m *streamsMap) getOrOpenReceiveStream(id protocol.StreamID) (receiveStream
 		if id.InitiatedBy() == m.perspective {
 			// an outgoing unidirectional stream is a send stream, not a receive stream
 			return nil, fmt.Errorf("peer attempted to open receive stream %d", id)
+=======
+func (m *streamsMap) Iterate(fn streamLambda) error {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	openStreams := append([]protocol.StreamID{}, m.openStreams...)
+
+	for _, streamID := range openStreams {
+		cont, err := m.iterateFunc(streamID, fn)
+		if err != nil {
+			return err
+>>>>>>> project-faster/main
 		}
 		str, err := m.incomingUniStreams.GetOrOpenStream(num)
 		return str, convertStreamError(err, protocol.StreamTypeUni, m.perspective)
@@ -307,6 +442,7 @@ func (m *streamsMap) CloseWithError(err error) {
 func (m *streamsMap) ResetFor0RTT() {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
+<<<<<<< HEAD
 	m.reset = true
 	m.CloseWithError(Err0RTTRejected)
 	m.initMaps()
@@ -316,4 +452,12 @@ func (m *streamsMap) UseResetMaps() {
 	m.mutex.Lock()
 	m.reset = false
 	m.mutex.Unlock()
+=======
+	m.closeErr = err
+	m.nextStreamOrErrCond.Broadcast()
+	m.openStreamOrErrCond.Broadcast()
+	for _, s := range m.openStreams {
+		m.streams[s].Cancel(err)
+	}
+>>>>>>> project-faster/main
 }

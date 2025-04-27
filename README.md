@@ -1,11 +1,20 @@
 # A QUIC implementation in pure Go
 
+**Please read https://multipath-quic.org/2017/12/09/artifacts-available.html to figure out how to setup the code.**
+
 <img src="docs/quic.png" width=303 height=124>
 
+<<<<<<< HEAD
 [![Documentation](https://img.shields.io/badge/docs-quic--go.net-red?style=flat)](https://quic-go.net/docs/)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/quic-go/quic-go)](https://pkg.go.dev/github.com/quic-go/quic-go)
 [![Code Coverage](https://img.shields.io/codecov/c/github/quic-go/quic-go/master.svg?style=flat-square)](https://codecov.io/gh/quic-go/quic-go/)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/quic-go.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:quic-go)
+=======
+[![Godoc Reference](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/project-faster/mp-quic-go)
+[![Linux Build Status](https://img.shields.io/travis/lucas-clemente/quic-go/master.svg?style=flat-square&label=linux+build)](https://travis-ci.org/lucas-clemente/quic-go)
+[![Windows Build Status](https://img.shields.io/appveyor/ci/lucas-clemente/quic-go/master.svg?style=flat-square&label=windows+build)](https://ci.appveyor.com/project/lucas-clemente/quic-go/branch/master)
+[![Code Coverage](https://img.shields.io/codecov/c/github/lucas-clemente/quic-go/master.svg?style=flat-square)](https://codecov.io/gh/lucas-clemente/quic-go/)
+>>>>>>> project-faster/main
 
 quic-go is an implementation of the QUIC protocol ([RFC 9000](https://datatracker.ietf.org/doc/html/rfc9000), [RFC 9001](https://datatracker.ietf.org/doc/html/rfc9001), [RFC 9002](https://datatracker.ietf.org/doc/html/rfc9002)) in Go. It has support for HTTP/3 ([RFC 9114](https://datatracker.ietf.org/doc/html/rfc9114)), including QPACK ([RFC 9204](https://datatracker.ietf.org/doc/html/rfc9204)) and HTTP Datagrams ([RFC 9297](https://datatracker.ietf.org/doc/html/rfc9297)).
 
@@ -16,6 +25,7 @@ In addition to these base RFCs, it also implements the following RFCs:
 * QUIC Version 2 ([RFC 9369](https://datatracker.ietf.org/doc/html/rfc9369))
 * QUIC Event Logging using qlog ([draft-ietf-quic-qlog-main-schema](https://datatracker.ietf.org/doc/draft-ietf-quic-qlog-main-schema/) and [draft-ietf-quic-qlog-quic-events](https://datatracker.ietf.org/doc/draft-ietf-quic-qlog-quic-events/))
 
+<<<<<<< HEAD
 Support for WebTransport over HTTP/3 ([draft-ietf-webtrans-http3](https://datatracker.ietf.org/doc/draft-ietf-webtrans-http3/)) is implemented in [webtransport-go](https://github.com/quic-go/webtransport-go).
 
 Detailed documentation can be found on [quic-go.net](https://quic-go.net/docs/).
@@ -44,9 +54,65 @@ Detailed documentation can be found on [quic-go.net](https://quic-go.net/docs/).
 If you'd like to see your project added to this list, please send us a PR.
 
 ## Release Policy
+=======
+## Guides
+
+We currently support Go 1.9+.
+
+Installing and updating dependencies:
+
+    go get -t -u ./...
+>>>>>>> project-faster/main
 
 quic-go always aims to support the latest two Go releases.
 
 ## Contributing
 
+<<<<<<< HEAD
 We are always happy to welcome new contributors! We have a number of self-contained issues that are suitable for first-time contributors, they are tagged with [help wanted](https://github.com/quic-go/quic-go/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). If you have any questions, please feel free to reach out by opening an issue or leaving a comment.
+=======
+### Running the example server
+
+    go run example/main.go -www /var/www/
+
+Using the `quic_client` from chromium:
+
+    quic_client --host=127.0.0.1 --port=6121 --v=1 https://quic.clemente.io
+
+Using Chrome:
+
+    /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --user-data-dir=/tmp/chrome --no-proxy-server --enable-quic --origin-to-force-quic-on=quic.clemente.io:443 --host-resolver-rules='MAP quic.clemente.io:443 127.0.0.1:6121' https://quic.clemente.io
+
+### QUIC without HTTP/2
+
+Take a look at [this echo example](example/echo/echo.go).
+
+### Using the example client
+
+    go run example/client/main.go https://clemente.io
+
+## Usage
+
+### As a server
+
+See the [example server](example/main.go) or try out [Caddy](https://github.com/mholt/caddy) (from version 0.9, [instructions here](https://github.com/mholt/caddy/wiki/QUIC)). Starting a QUIC server is very similar to the standard lib http in go:
+
+```go
+http.Handle("/", http.FileServer(http.Dir(wwwDir)))
+h2quic.ListenAndServeQUIC("localhost:4242", "/path/to/cert/chain.pem", "/path/to/privkey.pem", nil)
+```
+
+### As a client
+
+See the [example client](example/client/main.go). Use a `h2quic.RoundTripper` as a `Transport` in a `http.Client`.
+
+```go
+http.Client{
+  Transport: &h2quic.RoundTripper{},
+}
+```
+
+## Contributing
+
+We are always happy to welcome new contributors! We have a number of self-contained issues that are suitable for first-time contributors, they are tagged with [want-help](https://github.com/project-faster/mp-quic-go/issues?q=is%3Aopen+is%3Aissue+label%3Awant-help). If you have any questions, please feel free to reach out by opening an issue or leaving a comment.
+>>>>>>> project-faster/main

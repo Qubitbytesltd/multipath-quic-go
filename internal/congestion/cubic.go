@@ -4,7 +4,12 @@ import (
 	"math"
 	"time"
 
+<<<<<<< HEAD:internal/congestion/cubic.go
 	"github.com/quic-go/quic-go/internal/protocol"
+=======
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+>>>>>>> project-faster/main:congestion/cubic.go
 )
 
 // This cubic implementation is based on the one found in Chromiums's QUIC

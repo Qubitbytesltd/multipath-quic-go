@@ -11,6 +11,11 @@ import (
 // LogLevel of quic-go
 type LogLevel uint8
 
+<<<<<<< HEAD
+=======
+const logEnv = "QUIC_GO_LOG_LEVEL"
+
+>>>>>>> project-faster/main
 const (
 	// LogLevelNothing disables
 	LogLevelNothing LogLevel = iota
@@ -22,6 +27,7 @@ const (
 	LogLevelDebug
 )
 
+<<<<<<< HEAD
 const logEnv = "QUIC_GO_LOG_LEVEL"
 
 // A Logger logs.
@@ -51,10 +57,21 @@ var _ Logger = &defaultLogger{}
 // SetLogLevel sets the log level
 func (l *defaultLogger) SetLogLevel(level LogLevel) {
 	l.logLevel = level
+=======
+var (
+	logLevel   = LogLevelNothing
+	timeFormat = ""
+)
+
+// SetLogLevel sets the log level
+func SetLogLevel(level LogLevel) {
+	logLevel = level
+>>>>>>> project-faster/main
 }
 
 // SetLogTimeFormat sets the format of the timestamp
 // an empty string disables the logging of timestamps
+<<<<<<< HEAD
 func (l *defaultLogger) SetLogTimeFormat(format string) {
 	log.SetFlags(0) // disable timestamp logging done by the log package
 	l.timeFormat = format
@@ -64,17 +81,35 @@ func (l *defaultLogger) SetLogTimeFormat(format string) {
 func (l *defaultLogger) Debugf(format string, args ...interface{}) {
 	if l.logLevel == LogLevelDebug {
 		l.logMessage(format, args...)
+=======
+func SetLogTimeFormat(format string) {
+	log.SetFlags(0) // disable timestamp logging done by the log package
+	timeFormat = format
+}
+
+// Debugf logs something
+func Debugf(format string, args ...interface{}) {
+	if logLevel == LogLevelDebug {
+		logMessage(format, args...)
+>>>>>>> project-faster/main
 	}
 }
 
 // Infof logs something
+<<<<<<< HEAD
 func (l *defaultLogger) Infof(format string, args ...interface{}) {
 	if l.logLevel >= LogLevelInfo {
 		l.logMessage(format, args...)
+=======
+func Infof(format string, args ...interface{}) {
+	if logLevel >= LogLevelInfo {
+		logMessage(format, args...)
+>>>>>>> project-faster/main
 	}
 }
 
 // Errorf logs something
+<<<<<<< HEAD
 func (l *defaultLogger) Errorf(format string, args ...interface{}) {
 	if l.logLevel >= LogLevelError {
 		l.logMessage(format, args...)
@@ -101,10 +136,24 @@ func (l *defaultLogger) WithPrefix(prefix string) Logger {
 		logLevel:   l.logLevel,
 		timeFormat: l.timeFormat,
 		prefix:     prefix,
+=======
+func Errorf(format string, args ...interface{}) {
+	if logLevel >= LogLevelError {
+		logMessage(format, args...)
+	}
+}
+
+func logMessage(format string, args ...interface{}) {
+	if len(timeFormat) > 0 {
+		log.Printf(time.Now().Format(timeFormat)+" "+format, args...)
+	} else {
+		log.Printf(format, args...)
+>>>>>>> project-faster/main
 	}
 }
 
 // Debug returns true if the log level is LogLevelDebug
+<<<<<<< HEAD
 func (l *defaultLogger) Debug() bool {
 	return l.logLevel == LogLevelDebug
 }
@@ -127,5 +176,27 @@ func readLoggingEnv() LogLevel {
 	default:
 		fmt.Fprintln(os.Stderr, "invalid quic-go log level, see https://github.com/quic-go/quic-go/wiki/Logging")
 		return LogLevelNothing
+=======
+func Debug() bool {
+	return logLevel == LogLevelDebug
+}
+
+func init() {
+	readLoggingEnv()
+}
+
+func readLoggingEnv() {
+	switch strings.ToLower(os.Getenv(logEnv)) {
+	case "":
+		return
+	case "debug":
+		logLevel = LogLevelDebug
+	case "info":
+		logLevel = LogLevelInfo
+	case "error":
+		logLevel = LogLevelError
+	default:
+		fmt.Fprintln(os.Stderr, "invalid quic-go log level, see https://github.com/project-faster/mp-quic-go/wiki/Logging")
+>>>>>>> project-faster/main
 	}
 }

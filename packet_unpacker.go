@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+<<<<<<< HEAD
 	"github.com/quic-go/quic-go/internal/handshake"
 	"github.com/quic-go/quic-go/internal/protocol"
 	"github.com/quic-go/quic-go/internal/qerr"
@@ -12,6 +13,20 @@ import (
 
 type headerDecryptor interface {
 	DecryptHeader(sample []byte, firstByte *byte, pnBytes []byte)
+=======
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+	"github.com/project-faster/mp-quic-go/internal/wire"
+	"github.com/project-faster/mp-quic-go/qerr"
+)
+
+type unpackedPacket struct {
+	encryptionLevel protocol.EncryptionLevel
+	frames          []wire.Frame
+}
+
+type quicAEAD interface {
+	Open(dst, src []byte, packetNumber protocol.PacketNumber, associatedData []byte) ([]byte, protocol.EncryptionLevel, error)
+>>>>>>> project-faster/main
 }
 
 type headerParseError struct {
@@ -39,15 +54,26 @@ type packetUnpacker struct {
 	shortHdrConnIDLen int
 }
 
+<<<<<<< HEAD
 var _ unpacker = &packetUnpacker{}
 
 func newPacketUnpacker(cs handshake.CryptoSetup, shortHdrConnIDLen int) *packetUnpacker {
 	return &packetUnpacker{
 		cs:                cs,
 		shortHdrConnIDLen: shortHdrConnIDLen,
+=======
+func (u *packetUnpacker) Unpack(publicHeaderBinary []byte, hdr *wire.PublicHeader, data []byte) (*unpackedPacket, error) {
+	buf := getPacketBuffer()
+	defer putPacketBuffer(buf)
+	decrypted, encryptionLevel, err := u.aead.Open(buf, data, hdr.PacketNumber, publicHeaderBinary)
+	if err != nil {
+		// Wrap err in quicError so that public reset is sent by session
+		return nil, qerr.Error(qerr.DecryptionFailure, err.Error())
+>>>>>>> project-faster/main
 	}
 }
 
+<<<<<<< HEAD
 // UnpackLongHeader unpacks a Long Header packet.
 // If the reserved bits are invalid, the error is wire.ErrInvalidReservedBits.
 // If any other error occurred when parsing the header, the error is of type headerParseError.
@@ -61,6 +87,84 @@ func (u *packetUnpacker) UnpackLongHeader(hdr *wire.Header, data []byte) (*unpac
 	case protocol.PacketTypeInitial:
 		encLevel = protocol.EncryptionInitial
 		opener, err := u.cs.GetInitialOpener()
+=======
+	if r.Len() == 0 {
+		return nil, qerr.MissingPayload
+	}
+
+	fs := make([]wire.Frame, 0, 2)
+
+	// Read all frames in the packet
+	for r.Len() > 0 {
+		typeByte, _ := r.ReadByte()
+		if typeByte == 0x0 { // PADDING frame
+			continue
+		}
+		r.UnreadByte()
+
+		var frame wire.Frame
+		if typeByte&0x80 == 0x80 {
+			frame, err = wire.ParseStreamFrame(r, u.version)
+			if err != nil {
+				err = qerr.Error(qerr.InvalidStreamData, err.Error())
+			} else {
+				streamID := frame.(*wire.StreamFrame).StreamID
+				if streamID != 1 && encryptionLevel <= protocol.EncryptionUnencrypted {
+					err = qerr.Error(qerr.UnencryptedStreamData, fmt.Sprintf("received unencrypted stream data on stream %d", streamID))
+				}
+			}
+		} else if typeByte&0xc0 == 0x40 {
+			frame, err = wire.ParseAckFrame(r, u.version)
+			if err != nil {
+				err = qerr.Error(qerr.InvalidAckData, err.Error())
+			}
+		} else if typeByte&0xe0 == 0x20 {
+			err = errors.New("unimplemented: CONGESTION_FEEDBACK")
+		} else {
+			switch typeByte {
+			case 0x01:
+				frame, err = wire.ParseRstStreamFrame(r, u.version)
+				if err != nil {
+					err = qerr.Error(qerr.InvalidRstStreamData, err.Error())
+				}
+			case 0x02:
+				frame, err = wire.ParseConnectionCloseFrame(r, u.version)
+				if err != nil {
+					err = qerr.Error(qerr.InvalidConnectionCloseData, err.Error())
+				}
+			case 0x03:
+				frame, err = wire.ParseGoawayFrame(r, u.version)
+				if err != nil {
+					err = qerr.Error(qerr.InvalidGoawayData, err.Error())
+				}
+			case 0x04:
+				frame, err = wire.ParseWindowUpdateFrame(r, u.version)
+				if err != nil {
+					err = qerr.Error(qerr.InvalidWindowUpdateData, err.Error())
+				}
+			case 0x05:
+				frame, err = wire.ParseBlockedFrame(r, u.version)
+				if err != nil {
+					err = qerr.Error(qerr.InvalidBlockedData, err.Error())
+				}
+			case 0x06:
+				frame, err = wire.ParseStopWaitingFrame(r, hdr.PacketNumber, hdr.PacketNumberLen, u.version)
+				if err != nil {
+					err = qerr.Error(qerr.InvalidStopWaitingData, err.Error())
+				}
+			case 0x07:
+				frame, err = wire.ParsePingFrame(r, u.version)
+			case 0x10:
+				frame, err = wire.ParseAddAddressFrame(r, u.version)
+			case 0x11:
+				frame, err = wire.ParseClosePathFrame(r, u.version)
+			case 0x12:
+				frame, err = wire.ParsePathsFrame(r, u.version)
+			default:
+				err = qerr.Error(qerr.InvalidFrameData, fmt.Sprintf("unknown type byte 0x%x", typeByte))
+			}
+		}
+>>>>>>> project-faster/main
 		if err != nil {
 			return nil, err
 		}

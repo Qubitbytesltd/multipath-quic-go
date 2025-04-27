@@ -1,6 +1,7 @@
 package protocol
 
 import (
+<<<<<<< HEAD
 	"crypto/tls"
 	"testing"
 
@@ -38,3 +39,17 @@ func TestEncryptionLevelStringRepresentation(t *testing.T) {
 	require.Equal(t, "0-RTT", Encryption0RTT.String())
 	require.Equal(t, "1-RTT", Encryption1RTT.String())
 }
+=======
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
+
+var _ = Describe("Encryption Level", func() {
+	It("has the correct string representation", func() {
+		Expect(EncryptionUnspecified.String()).To(Equal("unknown"))
+		Expect(EncryptionUnencrypted.String()).To(Equal("unencrypted"))
+		Expect(EncryptionSecure.String()).To(Equal("encrypted (not forward-secure)"))
+		Expect(EncryptionForwardSecure.String()).To(Equal("forward-secure"))
+	})
+})
+>>>>>>> project-faster/main

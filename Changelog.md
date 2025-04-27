@@ -1,5 +1,6 @@
 # Changelog
 
+<<<<<<< HEAD
 ## v0.22.0 (2021-07-25)
 
 - Use `ReadBatch` to read multiple UDP packets from the socket with a single syscall
@@ -95,14 +96,27 @@
 - Added `quic.Config` options for maximal flow control windows
 - Add a `quic.Config` option for QUIC versions
 - Add a `quic.Config` option to request omission of the connection ID from a server
+=======
+## v0.6.0 (unreleased)
+
+- Add support for QUIC 38 and 39, drop support for QUIC 35 and 36
+- Added `quic.Config` options for maximal flow control windows
+- Add a `quic.Config` option for QUIC versions
+- Add a `quic.Config` option to request truncation of the connection ID from a server
+>>>>>>> project-faster/main
 - Add a `quic.Config` option to configure the source address validation
 - Add a `quic.Config` option to configure the handshake timeout
 - Add a `quic.Config` option to configure the idle timeout
 - Add a `quic.Config` option to configure keep-alive
 - Rename the STK to Cookie
 - Implement `net.Conn`-style deadlines for streams
+<<<<<<< HEAD
 - Remove the `tls.Config` from the `quic.Config`. The `tls.Config` must now be passed to the `Dial` and `Listen` functions as a separate parameter. See the [Godoc](https://godoc.org/github.com/quic-go/quic-go) for details.
 - Changed the log level environment variable to only accept strings ("DEBUG", "INFO", "ERROR"), see [the wiki](https://github.com/quic-go/quic-go/wiki/Logging) for more details.
+=======
+- Remove the `tls.Config` from the `quic.Config`. The `tls.Config` must now be passed to the `Dial` and `Listen` functions as a separate parameter. See the [Godoc](https://godoc.org/github.com/project-faster/mp-quic-go) for details.
+- Changed the log level environment variable to only accept strings ("DEBUG", "INFO", "ERROR"), see [the wiki](https://github.com/project-faster/mp-quic-go/wiki/Logging) for more details.
+>>>>>>> project-faster/main
 - Rename the `h2quic.QuicRoundTripper` to `h2quic.RoundTripper`
 - Changed `h2quic.Server.Serve()` to accept a `net.PacketConn`
 - Drop support for Go 1.7 and 1.8.

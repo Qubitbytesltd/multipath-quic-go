@@ -4,7 +4,11 @@ import (
 	"math"
 	"time"
 
+<<<<<<< HEAD:internal/congestion/bandwidth.go
 	"github.com/quic-go/quic-go/internal/protocol"
+=======
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+>>>>>>> project-faster/main:congestion/bandwidth.go
 )
 
 // Bandwidth of a connection

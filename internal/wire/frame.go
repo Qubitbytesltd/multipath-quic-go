@@ -1,11 +1,18 @@
 package wire
 
 import (
+<<<<<<< HEAD
 	"github.com/quic-go/quic-go/internal/protocol"
+=======
+	"bytes"
+
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+>>>>>>> project-faster/main
 )
 
 // A Frame in QUIC
 type Frame interface {
+<<<<<<< HEAD
 	Append(b []byte, version protocol.Version) ([]byte, error)
 	Length(version protocol.Version) protocol.ByteCount
 }
@@ -18,4 +25,8 @@ func IsProbingFrame(f Frame) bool {
 		return true
 	}
 	return false
+=======
+	Write(b *bytes.Buffer, version protocol.VersionNumber) error
+	MinLength(version protocol.VersionNumber) (protocol.ByteCount, error)
+>>>>>>> project-faster/main
 }

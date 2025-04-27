@@ -8,6 +8,7 @@ const (
 	PerspectiveServer Perspective = 1
 	PerspectiveClient Perspective = 2
 )
+<<<<<<< HEAD
 
 // Opposite returns the perspective of the peer
 func (p Perspective) Opposite() Perspective {
@@ -24,3 +25,5 @@ func (p Perspective) String() string {
 		return "invalid perspective"
 	}
 }
+=======
+>>>>>>> project-faster/main

@@ -1,7 +1,11 @@
 package quic
 
 import (
+<<<<<<< HEAD
 	"testing"
+=======
+	"github.com/project-faster/mp-quic-go/internal/protocol"
+>>>>>>> project-faster/main
 
 	"github.com/quic-go/quic-go/internal/protocol"
 

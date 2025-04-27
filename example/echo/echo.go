@@ -1,17 +1,29 @@
 package main
 
 import (
+<<<<<<< HEAD
 	"context"
 	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/tls"
 	"crypto/x509"
+=======
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/pem"
+>>>>>>> project-faster/main
 	"fmt"
 	"io"
 	"log"
 	"math/big"
 
+<<<<<<< HEAD
 	"github.com/quic-go/quic-go"
+=======
+	quic "github.com/project-faster/mp-quic-go"
+>>>>>>> project-faster/main
 )
 
 const addr = "localhost:4242"
@@ -23,7 +35,12 @@ const message = "foobar"
 func main() {
 	go func() { log.Fatal(echoServer()) }()
 
+<<<<<<< HEAD
 	if err := clientMain(); err != nil {
+=======
+	err := clientMain()
+	if err != nil {
+>>>>>>> project-faster/main
 		panic(err)
 	}
 }
@@ -34,6 +51,7 @@ func echoServer() error {
 	if err != nil {
 		return err
 	}
+<<<<<<< HEAD
 	defer listener.Close()
 
 	conn, err := listener.Accept(context.Background())
@@ -47,12 +65,23 @@ func echoServer() error {
 	}
 	defer stream.Close()
 
+=======
+	sess, err := listener.Accept()
+	if err != nil {
+		return err
+	}
+	stream, err := sess.AcceptStream()
+	if err != nil {
+		panic(err)
+	}
+>>>>>>> project-faster/main
 	// Echo through the loggingWriter
 	_, err = io.Copy(loggingWriter{stream}, stream)
 	return err
 }
 
 func clientMain() error {
+<<<<<<< HEAD
 	tlsConf := &tls.Config{
 		InsecureSkipVerify: true,
 		NextProtos:         []string{"quic-echo-example"},
@@ -71,11 +100,31 @@ func clientMain() error {
 
 	fmt.Printf("Client: Sending '%s'\n", message)
 	if _, err := stream.Write([]byte(message)); err != nil {
+=======
+	session, err := quic.DialAddr(addr, &tls.Config{InsecureSkipVerify: true}, nil)
+	if err != nil {
+		return err
+	}
+
+	stream, err := session.OpenStreamSync()
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Client: Sending '%s'\n", message)
+	_, err = stream.Write([]byte(message))
+	if err != nil {
+>>>>>>> project-faster/main
 		return err
 	}
 
 	buf := make([]byte, len(message))
+<<<<<<< HEAD
 	if _, err := io.ReadFull(stream, buf); err != nil {
+=======
+	_, err = io.ReadFull(stream, buf)
+	if err != nil {
+>>>>>>> project-faster/main
 		return err
 	}
 	fmt.Printf("Client: Got '%s'\n", buf)
@@ -93,11 +142,16 @@ func (w loggingWriter) Write(b []byte) (int, error) {
 
 // Setup a bare-bones TLS config for the server
 func generateTLSConfig() *tls.Config {
+<<<<<<< HEAD
 	_, priv, err := ed25519.GenerateKey(rand.Reader)
+=======
+	key, err := rsa.GenerateKey(rand.Reader, 1024)
+>>>>>>> project-faster/main
 	if err != nil {
 		panic(err)
 	}
 	template := x509.Certificate{SerialNumber: big.NewInt(1)}
+<<<<<<< HEAD
 	certDER, err := x509.CreateCertificate(rand.Reader, &template, &template, priv.Public(), priv)
 	if err != nil {
 		panic(err)
@@ -110,4 +164,18 @@ func generateTLSConfig() *tls.Config {
 		}},
 		NextProtos: []string{"quic-echo-example"},
 	}
+=======
+	certDER, err := x509.CreateCertificate(rand.Reader, &template, &template, &key.PublicKey, key)
+	if err != nil {
+		panic(err)
+	}
+	keyPEM := pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(key)})
+	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER})
+
+	tlsCert, err := tls.X509KeyPair(certPEM, keyPEM)
+	if err != nil {
+		panic(err)
+	}
+	return &tls.Config{Certificates: []tls.Certificate{tlsCert}}
+>>>>>>> project-faster/main
 }

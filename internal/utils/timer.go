@@ -1,9 +1,13 @@
 package utils
 
+<<<<<<< HEAD
 import (
 	"math"
 	"time"
 )
+=======
+import "time"
+>>>>>>> project-faster/main
 
 // A Timer wrapper that behaves correctly when resetting
 type Timer struct {
@@ -14,7 +18,11 @@ type Timer struct {
 
 // NewTimer creates a new timer that is not set
 func NewTimer() *Timer {
+<<<<<<< HEAD
 	return &Timer{t: time.NewTimer(time.Duration(math.MaxInt64))}
+=======
+	return &Timer{t: time.NewTimer(0)}
+>>>>>>> project-faster/main
 }
 
 // Chan returns the channel of the wrapped timer
@@ -24,7 +32,11 @@ func (t *Timer) Chan() <-chan time.Time {
 
 // Reset the timer, no matter whether the value was read or not
 func (t *Timer) Reset(deadline time.Time) {
+<<<<<<< HEAD
 	if deadline.Equal(t.deadline) && !t.read {
+=======
+	if deadline.Equal(t.deadline) {
+>>>>>>> project-faster/main
 		// No need to reset the timer
 		return
 	}
@@ -34,9 +46,13 @@ func (t *Timer) Reset(deadline time.Time) {
 	if !t.t.Stop() && !t.read {
 		<-t.t.C
 	}
+<<<<<<< HEAD
 	if !deadline.IsZero() {
 		t.t.Reset(time.Until(deadline))
 	}
+=======
+	t.t.Reset(deadline.Sub(time.Now()))
+>>>>>>> project-faster/main
 
 	t.read = false
 	t.deadline = deadline
@@ -46,6 +62,7 @@ func (t *Timer) Reset(deadline time.Time) {
 func (t *Timer) SetRead() {
 	t.read = true
 }
+<<<<<<< HEAD
 
 func (t *Timer) Deadline() time.Time {
 	return t.deadline
@@ -55,3 +72,5 @@ func (t *Timer) Deadline() time.Time {
 func (t *Timer) Stop() {
 	t.t.Stop()
 }
+=======
+>>>>>>> project-faster/main

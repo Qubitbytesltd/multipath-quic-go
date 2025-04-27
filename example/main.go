@@ -15,10 +15,15 @@ import (
 
 	_ "net/http/pprof"
 
+<<<<<<< HEAD
 	"github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"
 	"github.com/quic-go/quic-go/internal/testdata"
 	"github.com/quic-go/quic-go/qlog"
+=======
+	"github.com/project-faster/mp-quic-go/h2quic"
+	"github.com/project-faster/mp-quic-go/internal/utils"
+>>>>>>> project-faster/main
 )
 
 type binds []string
@@ -130,7 +135,7 @@ func setupHandler(www string) http.Handler {
 func main() {
 	// defer profile.Start().Stop()
 	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
+		log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
 	}()
 	// runtime.SetBlockProfileRate(1)
 
@@ -142,8 +147,23 @@ func main() {
 	cert := flag.String("cert", "", "TLS certificate (requires -key option)")
 	flag.Parse()
 
+<<<<<<< HEAD
+=======
+	if *verbose {
+		utils.SetLogLevel(utils.LogLevelDebug)
+	} else {
+		utils.SetLogLevel(utils.LogLevelInfo)
+	}
+	utils.SetLogTimeFormat("")
+
+	certFile := *certPath + "/fullchain.pem"
+	keyFile := *certPath + "/privkey.pem"
+
+	http.Handle("/", http.FileServer(http.Dir(*www)))
+
+>>>>>>> project-faster/main
 	if len(bs) == 0 {
-		bs = binds{"localhost:6121"}
+		bs = binds{"0.0.0.0:6121"}
 	}
 
 	handler := setupHandler(*www)

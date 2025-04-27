@@ -1,5 +1,6 @@
 package wire
 
+<<<<<<< HEAD
 import (
 	"fmt"
 	"strings"
@@ -11,6 +12,13 @@ import (
 // LogFrame logs a frame, either sent or received
 func LogFrame(logger utils.Logger, frame Frame, sent bool) {
 	if !logger.Debug() {
+=======
+import "github.com/project-faster/mp-quic-go/internal/utils"
+
+// LogFrame logs a frame, either sent or received
+func LogFrame(frame Frame, sent bool) {
+	if !utils.Debug() {
+>>>>>>> project-faster/main
 		return
 	}
 	dir := "<-"
@@ -18,6 +26,7 @@ func LogFrame(logger utils.Logger, frame Frame, sent bool) {
 		dir = "->"
 	}
 	switch f := frame.(type) {
+<<<<<<< HEAD
 	case *CryptoFrame:
 		dataLen := protocol.ByteCount(len(f.Data))
 		logger.Debugf("\t%s &wire.CryptoFrame{Offset: %d, Data length: %d, Offset + Data length: %d}", dir, f.Offset, dataLen, f.Offset+dataLen)
@@ -70,5 +79,23 @@ func LogFrame(logger utils.Logger, frame Frame, sent bool) {
 		logger.Debugf("\t%s &wire.NewTokenFrame{Token: %#x}", dir, f.Token)
 	default:
 		logger.Debugf("\t%s %#v", dir, frame)
+=======
+	case *StreamFrame:
+		utils.Debugf("\t%s &wire.StreamFrame{StreamID: %d, FinBit: %t, Offset: 0x%x, Data length: 0x%x, Offset + Data length: 0x%x}", dir, f.StreamID, f.FinBit, f.Offset, f.DataLen(), f.Offset+f.DataLen())
+	case *StopWaitingFrame:
+		if sent {
+			utils.Debugf("\t%s &wire.StopWaitingFrame{LeastUnacked: 0x%x, PacketNumberLen: 0x%x}", dir, f.LeastUnacked, f.PacketNumberLen)
+		} else {
+			utils.Debugf("\t%s &wire.StopWaitingFrame{LeastUnacked: 0x%x}", dir, f.LeastUnacked)
+		}
+	case *AckFrame:
+		utils.Debugf("\t%s &wire.AckFrame{PathID: 0x%x, LargestAcked: 0x%x, LowestAcked: 0x%x, AckRanges: %#v, DelayTime: %s}", dir, f.PathID, f.LargestAcked, f.LowestAcked, f.AckRanges, f.DelayTime.String())
+	case *AddAddressFrame:
+		utils.Debugf("\t%s &wire.AddAddressFrame{IPVersion: %d, Addr: %s}", dir, f.IPVersion, f.Addr.String())
+	case *ClosePathFrame:
+		utils.Debugf("\t%s &wire.ClosePathFrame{PathID: 0x%x, LargestAcked: 0x%x, LowestAcked: 0x%x, AckRanges: %#v}", dir, f.PathID, f.LargestAcked, f.LowestAcked, f.AckRanges)
+	default:
+		utils.Debugf("\t%s %#v", dir, frame)
+>>>>>>> project-faster/main
 	}
 }
